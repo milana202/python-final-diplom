@@ -2,13 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 
 ORDER_STATUS_CHOISES = (
-    ('blanket', 'корзина'),
-    ('got', 'принят'),
-    ('confirmed', 'подтвержден'),
-    ('cancelled', 'отменен'),
-    ('assembly', 'сборка'),
-    ('delivery', 'доставка'),
-    ('complete', 'завершен')
+    ('blanket', 'Корзина'),
+    ('got', 'Принят'),
+    ('confirmed', 'Подтвержден'),
+    ('cancelled', 'Отменен'),
+    ('assembling', 'Собирается'),
+    ('delivering', 'Передан в доставку'),
+    ('completed', 'Завершен')
 )
 
 USER_TYPE_CHOICES = (
@@ -17,21 +17,19 @@ USER_TYPE_CHOICES = (
 )
 
 class User(AbstractUser):
-    pass
-    # role = models.CharField(verbose_name='Роль пользователя', choices=USER_TYPE_CHOICES)
-    # first_name = models.CharField(verbose_name='Имя', max_length=15)
-    # second_name = models.CharField(verbose_name='Отчество', max_length=15, null=True, blank=True)
-    # last_name = models.CharField(verbose_name='Фамилия', max_length=15)
-    # email = models.EmailField(_("email address"), unique=True)
-    # company = models.CharField(verbose_name='Компания', max_length=30)
-    # job_title = models.CharField(verbose_name='Должность', max_length=60)
-    #
-    # def __str__(self):
-    #     return self.email
-    #
-    # class Meta:
-    #     ordering = ('email',)
+    role = models.CharField(verbose_name='Роль пользователя', max_length=15, choices=USER_TYPE_CHOICES)
+    first_name = models.CharField(verbose_name='Имя', max_length=15)
+    second_name = models.CharField(verbose_name='Отчество', max_length=15, null=True, blank=True)
+    last_name = models.CharField(verbose_name='Фамилия', max_length=15)
+    email = models.EmailField(max_length=254, unique=True)
+    company = models.CharField(verbose_name='Компания', max_length=30)
+    job_title = models.CharField(verbose_name='Должность', max_length=60)
 
+    def __str__(self):
+        return self.email
+
+    class Meta:
+        ordering = ('email',)
 
 class Shop(models.Model):
     name = models.CharField(max_length=40, verbose_name='Магазин')
@@ -68,9 +66,9 @@ class ProductParameter(models.Model):
     value = models.CharField(verbose_name='Значение', max_length=40)
 
 class Order(models.Model):
-    user = models.ForeignKey(User, verbose_name='Покупатель', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='Покупатель', related_name='order', on_delete=models.CASCADE)
     dt = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(verbose_name='Статус заказа', choices=ORDER_STATUS_CHOISES)
+    status = models.CharField(verbose_name='Статус заказа', max_length=15, choices=ORDER_STATUS_CHOISES)
 
 class OrderInfo(models.Model):
     order = models.ForeignKey(Order, verbose_name='Заказ', related_name='order_info', on_delete=models.CASCADE)
