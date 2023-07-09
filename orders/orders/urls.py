@@ -17,8 +17,23 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import include
+from rest_framework.routers import DefaultRouter
+from .views import RegistrUserView
+import rest_framework.urls
+import djoser.urls
+
+
+
+r = DefaultRouter
+# r.register('prefix', ModelnameViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+    path('api-auth/', include('rest_framework.urls')),
+    path('auth/', include('djoser.urls')),
+    path('registration/', RegistrUserView.as_view(), name='registration'),
+    # path('something_view/<pk>/', SomethingView.as_view()),
+    # static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
+              # + r.urls

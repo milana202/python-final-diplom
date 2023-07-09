@@ -140,10 +140,10 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='productinfo',
-            constraint=models.UniqueConstraint(fields=('product', 'shop'), name=None),
+            constraint=models.UniqueConstraint(fields=('product', 'shop'), name='unique product in shop'),
         ),
         migrations.AddConstraint(
             model_name='orderinfo',
-            constraint=models.UniqueConstraint(fields=('product', 'shop'), name=None),
+            constraint=models.UniqueConstraint(fields=('product', 'shop'), name='unique product in order'),
         ),
     ]

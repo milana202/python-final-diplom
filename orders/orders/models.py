@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser, UserManager, AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.shortcuts import render
 
 import json
@@ -23,7 +23,36 @@ USER_TYPE_CHOICES = (
 )
 
 
-class User(AbstractUser):
+# Создаем класс менеджера пользователей
+class MyUserManager(BaseUserManager):
+    def _create_user(self, email, username, password, **extra_fields):
+        if not email:
+            raise ValueError("Вы не ввели Email")
+        if not username:
+            raise ValueError("Вы не ввели Логин")
+        user = self.model(
+            email=self.normalize_email(email),
+            username=username,
+            **extra_fields,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    # Делаем метод для создание обычного пользователя
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    # Делаем метод для создание админа сайта
+    def create_superuser(self, email, username, password):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self._create_user(email, username, password, is_staff=True, is_superuser=True)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(verbose_name='Роль пользователя', max_length=15, choices=USER_TYPE_CHOICES)
     first_name = models.CharField(verbose_name='Имя', max_length=15)
     second_name = models.CharField(verbose_name='Отчество', max_length=15, null=True, blank=True)
@@ -31,6 +60,12 @@ class User(AbstractUser):
     email = models.EmailField(max_length=254, unique=True)
     company = models.CharField(verbose_name='Компания', max_length=30)
     job_title = models.CharField(verbose_name='Должность', max_length=60)
+    is_staff = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'  # Идентификатор для обращения
+    REQUIRED_FIELDS = ['username']  # Список имён полей для Superuser
+
+    objects = MyUserManager()  # Добавляем методы класса MyUserManager
 
     def __str__(self):
         return self.email
@@ -88,7 +123,7 @@ class ProductInfo(models.Model):
 
     class Meta():
         constraints = [
-            models.UniqueConstraint(fields=['product', 'shop'], name=None)
+            models.UniqueConstraint(fields=['product', 'shop'], name='unique product in shop')
         ]
 
 
@@ -124,7 +159,7 @@ class OrderInfo(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['product', 'shop'], name=None)
+            models.UniqueConstraint(fields=['product', 'shop'], name='unique product in order')
         ]
 
 
@@ -139,7 +174,6 @@ class Contacts(models.Model):
 
 
 class UpdateData(models.Model):
-
     def upload_file(request):
         if request.method == 'POST':
             form = ModelFormWithFileField(request.POST, request.FILES)
@@ -179,7 +213,3 @@ class UpdateData(models.Model):
 
         return JsonResponse({'Status': True})
 
-        else:
-        form = ModelFormWithFileField()
-
-    return render(request, 'upload.yaml', {'form': form})

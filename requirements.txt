@@ -3,3 +3,9 @@ pytz==2018.5
 psycopg2-binary-2.9.6
 pillow-9.5.0
 pyyaml-6.0
+asgiref-3.7.2
+django-4.2.3
+djangorestframework-3.14.0
+typing-extensions-4.7.1
+tzdata-2023.3
+django_filter-23.2
