@@ -3,4 +3,6 @@ from .models import User
 
 
 # указать, какие модели должны быть в админке
-# @admin.register(имя класса)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['role', 'username', 'second_name', 'last_name', 'email', 'company', 'job_title']

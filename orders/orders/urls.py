@@ -19,10 +19,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import include
 from rest_framework.routers import DefaultRouter
-from .views import RegistrUserView
+from .views import RegistrUserView, LoginAccount, CategoryView, ShopView, ProductInfoView, BasketView, PartnerUpdate, PartnerState, PartnerOrders, ContactView, OrderView
 import rest_framework.urls
 import djoser.urls
-import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,13 +32,12 @@ urlpatterns = [
     path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
     path('partner/state', PartnerState.as_view(), name='partner-state'),
     path('partner/orders', PartnerOrders.as_view(), name='partner-orders'),
-    path('user/details', AccountDetails.as_view(), name='user-details'),
+    # path('user/details', AccountDetails.as_view(), name='user-details'),
     path('user/contact', ContactView.as_view(), name='user-contact'),
-    path('user/password_reset', reset_password_request_token, name='password-reset'),
+    # path('user/password_reset', reset_password_request_token, name='password-reset'),
     path('categories', CategoryView.as_view(), name='categories'),
     path('shops', ShopView.as_view(), name='shops'),
-    path('products', ProductInfoView.as_view(), name='shops'),
+    path('products', ProductInfoView.as_view(), name='products'),
     path('basket', BasketView.as_view(), name='basket'),
     path('order', OrderView.as_view(), name='order'),
-    static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

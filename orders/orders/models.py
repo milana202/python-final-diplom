@@ -47,14 +47,14 @@ class MyUserManager(BaseUserManager):
 
     # Делаем метод для создание админа сайта
     def create_superuser(self, email, username, password):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        # extra_fields.setdefault('is_staff', True)
+        # extra_fields.setdefault('is_superuser', True)
         return self._create_user(email, username, password, is_staff=True, is_superuser=True)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(verbose_name='Роль пользователя', max_length=15, choices=USER_TYPE_CHOICES)
-    first_name = models.CharField(verbose_name='Имя', max_length=15)
+    username = models.CharField(verbose_name='Имя', max_length=15)
     second_name = models.CharField(verbose_name='Отчество', max_length=15, null=True, blank=True)
     last_name = models.CharField(verbose_name='Фамилия', max_length=15)
     email = models.EmailField(max_length=254, unique=True)
@@ -171,3 +171,8 @@ class Contacts(models.Model):
     building = models.PositiveIntegerField(verbose_name='Номер дома')
     additional_number = models.PositiveIntegerField(verbose_name='Строение', null=True, blank=True)
     litera = models.CharField(verbose_name='Литера', max_length=1, null=True, blank=True)
+    apartment = models.CharField(verbose_name='Квартира', max_length=4, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Контакты'
+        verbose_name_plural = 'Контакты'

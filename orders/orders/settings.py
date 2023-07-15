@@ -151,3 +151,5 @@ DJOSER = {
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': False,
 }
+
+DEFAULT_CHARSET	= 'utf-8'

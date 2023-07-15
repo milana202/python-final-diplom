@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Contacts, Category, Shop, Product, ProductInfo, ProductParameter, Order, OrderInfo
 
 
 class UserRegistrSerializer(serializers.ModelSerializer):
@@ -25,18 +25,18 @@ class UserRegistrSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class ContactSerializer(serializers.ModelSerializer):
+class ContactsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Contact
+        model = Contacts
         fields = ('id', 'city', 'street', 'building', 'litera', 'apartment')
         read_only_fields = ('id',)
 
 class UserSerializer(serializers.ModelSerializer):
-    contacts = ContactSerializer(read_only=True, many=True)
+    contacts = ContactsSerializer(read_only=True, many=True)
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'second_name', 'last_name', 'email', 'company', 'job_title')
+        fields = ('id', 'username', 'second_name', 'last_name', 'email', 'company', 'job_title')
         read_only_fields = ('id',)
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -80,7 +80,7 @@ class ProductInfoSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrderItem
+        model = OrderInfo
         fields = ('id', 'product_info', 'quantity', 'order',)
         read_only_fields = ('id',)
         extra_kwargs = {
